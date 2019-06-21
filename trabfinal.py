@@ -14,10 +14,40 @@ def clean_tweet(tweet):
   tweet = re.sub(r'\n', ' ', tweet.strip())
   # remove links
   tweet = re.sub(r'https?:\/\/.*\/\w*', '', tweet.lower())
-  # clean = ' '.join(re.sub(r"(@[A-Za-z0-9]+) | ([^0-9A-Za-z \t]) | (\w+:\/\/\S+)", " ", tweet).split())
   # detect and remove emojis 
   tweet = emoji.get_emoji_regexp().sub(u'', tweet)
+  # remove extra ponctuation
+  tweet = re.sub(r'\.{2,}', '.', tweet)
+  tweet = re.sub(r'\?{2,}', '?', tweet)
+  tweet = re.sub(r'!{2,}', '!', tweet)
   return tweet
+
+def processing_tweet(tweet):
+  tweet = re.sub(r'\bvc|voce\b', 'você', tweet)
+  tweet = re.sub(r'\bpq\b', 'por que', tweet)
+  tweet = re.sub(r'\bhj\b', 'hoje', tweet)
+  tweet = re.sub(r'\bmt\b', 'muito', tweet)
+  tweet = re.sub(r'\bq\b', 'que', tweet)
+  tweet = re.sub(r'\bt[ô|o]\b', 'estou', tweet)
+  return tweet
+
+def analyse_tweet(tweet_text):  
+  translator = Translator()
+  text_en = translator.translate(tweet_text, src='pt', dest='en')
+
+  # text_pt = TextBlob(tweet_text)
+  # blob = TextBlob(str(text_pt.translate(from_lang='pt', to='en')))
+  
+  # blob = TextBlob(text_en.text)
+  polarity = blob.sentiment.polarity
+
+  if polarity > 0:
+    sentiment = 1
+  elif polarity < 0:
+    sentiment = -1
+  else:
+    sentiment = 0 
+  return sentiment
 
 def get_tweets(keyword):
   # pass twitter credentials to tweepy
@@ -31,46 +61,22 @@ def get_tweets(keyword):
   for page in cursor.pages(5):
     for status in page:
       status = status._json
-      tweet = clean_tweet(status['full_text'])
+      tweet = status['full_text']
       # ignore retweets
       if tweet[0:2] == 'rt':
         continue
-      tweets.append({'tweet_id': status['id'], 'text': tweet})
+      tweet = clean_tweet(tweet)
+      tweet_text = processing_tweet(tweet)
+      
+      sentiment = analyse_tweet(tweet_text)
+      tweets.append({'tweet_id': status['id'], 'text': tweet_text, 'polarity': sentiment})
   
   return tweets
-
-def analyse_tweet(tweets_df):
-  total = 0
-  sentiments = []
-  for index, tweet in tweets_df.iterrows():
-    tweet = tweet['text']
-  
-    translator = Translator()
-    text_en = translator.translate(tweet, src='pt', dest='en')
-
-    # text_pt = TextBlob(tweet)
-    # text_en = TextBlob(str(text_pt.translate(from_lang='pt', to='en')))
-    
-    text_en = TextBlob(text_en.text)
-    polarity = text_en.sentiment.polarity
-
-    if polarity > 0:
-      sentiment = 1
-    elif polarity < 0:
-      sentiment = -1
-    else:
-      sentiment = 0
-    sentiments.append(sentiment)
-    total += 1
-    print(total)
-  
-  tweets_df['polarity'] = sentiments
-  return tweets_df
 
 def construct_dataset(csv_name):
   tweets = get_tweets('unb')
   tweets_df = pd.DataFrame(tweets)
-  tweets_df = analyse_tweet(tweets_df)
+  tweets_df.drop_duplicates(subset='text', keep='first')
   tweets_df.to_csv(csv_name, encoding='utf-8', index=False)
 
-# construct_dataset('unb_tweets.csv')
+construct_dataset('unb_tweets_processed.csv')
