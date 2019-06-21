@@ -15,16 +15,9 @@ def clean_tweet(tweet):
   # remove links
   tweet = re.sub(r'https?:\/\/.*\/\w*', '', tweet.lower())
   # clean = ' '.join(re.sub(r"(@[A-Za-z0-9]+) | ([^0-9A-Za-z \t]) | (\w+:\/\/\S+)", " ", tweet).split())
-
-  # detect emojis and convert to string
-  # tweet = emoji.demojize(tweet) 
+  # detect and remove emojis 
+  tweet = emoji.get_emoji_regexp().sub(u'', tweet)
   return tweet
-
-def remove_features(tweet):
-  # detect emojis and convert to string
-  # tweet = emoji.demojize(tweet) 
-  emoji.get_emoji_regexp().sub(u'', tweet)
-  return emoji.get_emoji_regexp().sub(u'', tweet)
 
 def get_tweets(keyword):
   # pass twitter credentials to tweepy
@@ -50,10 +43,11 @@ def analyse_tweet(tweets_df):
   total = 0
   sentiments = []
   for index, tweet in tweets_df.iterrows():
-    tweet = remove_features(tweet['text'])
+    tweet = tweet['text']
   
     translator = Translator()
     text_en = translator.translate(tweet, src='pt', dest='en')
+
     # text_pt = TextBlob(tweet)
     # text_en = TextBlob(str(text_pt.translate(from_lang='pt', to='en')))
     
