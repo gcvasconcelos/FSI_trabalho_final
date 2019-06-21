@@ -1,0 +1,16 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+access_key	../config.py	/^access_key= '4187005181-i7T3BIwd1KoAUetqtUhYyHJmchGuGhYmI8qX9Yw'$/;"	kind:variable	line:4
+access_secret	../config.py	/^access_secret = 'FCvDZeIDoRzmng8RYyJuEyQRtOM3WRzARVXhCW0yQ226r'$/;"	kind:variable	line:5
+api	../trabfinal.py	/^api = tweepy.API(auth)$/;"	kind:variable	line:13
+auth	../trabfinal.py	/^auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)$/;"	kind:variable	line:11
+config.py	../config.py	1;"	kind:file	line:1
+consumer_key	../config.py	/^consumer_key = 'sqTG7TZpeJ35FLGWXyH5PwwSX'$/;"	kind:variable	line:2
+consumer_secret	../config.py	/^consumer_secret = 'w00O6ddPKvzOiW3PmKlKd5WsW44E8ZfdvhNfAl4xZVexRgGU34'$/;"	kind:variable	line:3
+cursor	../trabfinal.py	/^cursor = tweepy.Cursor(api.search, q='unb', count=200, include_rts=False, since='2018-10-01', tweet_mode='extended', lang='pt')$/;"	kind:variable	line:15
+status	../trabfinal.py	/^    status = status._json$/;"	kind:variable	line:18
+trabfinal.py	../trabfinal.py	1;"	kind:file	line:1
