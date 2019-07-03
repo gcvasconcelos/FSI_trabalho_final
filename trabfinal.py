@@ -32,14 +32,14 @@ def processing_tweet(tweet):
   return tweet
 
 def analyse_tweet(tweet_text):  
-  translator = Translator()
-  text_en = translator.translate(tweet_text, src='pt', dest='en')
+  # translator = Translator()
+  # text_en = translator.translate(tweet_text, src='pt', dest='en')
 
-  # text_pt = TextBlob(tweet_text)
+  text_pt = TextBlob(tweet_text)
   # blob = TextBlob(str(text_pt.translate(from_lang='pt', to='en')))
   
   # blob = TextBlob(text_en.text)
-  polarity = blob.sentiment.polarity
+  polarity = text_pt.sentiment.polarity
 
   if polarity > 0:
     sentiment = 1
