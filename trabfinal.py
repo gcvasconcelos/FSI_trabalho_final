@@ -16,12 +16,25 @@ for word_file in positives_file:
   word_file = re.sub(r'\n', '', word_file.strip())
   positives.append(word_file)
 
+# load positive emojis
+positives_emojis = []
+positives_emojis_file = open('emojis_positivos.txt', 'r')
+for word_file in positives_emojis_file:
+  word_file = re.sub(r'\n', '', word_file.strip())
+  positives_emojis.append(word_file)
+
 # load negative words from dictionary
 negatives = []
 negatives_file = open('negativos.txt', 'r')
 for word_file in negatives_file:
   word_file = re.sub(r'\n', '', word_file.strip())
   negatives.append(word_file)
+
+negatives_emojis = []
+negatives_emojis_file = open('emojis_negativos.txt', 'r')
+for word_file in negatives_emojis_file:
+  word_file = re.sub(r'\n', '', word_file.strip())
+  negatives_emojis.append(word_file)
 
 def clean_tweet(tweet): 
   # remove ats
@@ -30,8 +43,6 @@ def clean_tweet(tweet):
   tweet = re.sub(r'\n', ' ', tweet.strip())
   # remove links
   tweet = re.sub(r'https?:\/\/.*\/\w*', '', tweet.lower())
-  # detect and remove emojis 
-  tweet = emoji.get_emoji_regexp().sub(u'', tweet)
   # remove extra ponctuation
   tweet = re.sub(r'\.{2,}', '.', tweet)
   tweet = re.sub(r'\?{2,}', '?', tweet)
@@ -66,6 +77,7 @@ def processing_tweet(tweet):
   tweet = re.sub(r'\bhj\b', 'hoje', tweet)
   tweet = re.sub(r'\bmt\b', 'muito', tweet)
   tweet = re.sub(r'\bq\b', 'que', tweet)
+  tweet = re.sub(r'\bn\b', 'não', tweet)
   tweet = re.sub(r'\bt[ô|o]\b', 'estou', tweet)
   return tweet
 
@@ -81,6 +93,14 @@ def analyse_tweet(tweet_text):
       if word == w_file:
         if sentiment >= 0:
           sentiment -= 1
+    for w_file in positives_emojis:
+      if word == w_file:
+        if sentiment <= 0:
+          sentiment += 1
+    for w_file in negatives_emojis:
+      if word == w_file:
+        if sentiment >= 0:
+          sentiment -= 1
   
   return sentiment
 
@@ -93,7 +113,7 @@ def get_tweets(keyword):
   cursor = tweepy.Cursor(api.search, q=keyword, count=200, include_rts=False, since='2018-10-01', tweet_mode='extended', lang='pt')
 
   tweets = []
-  for page in cursor.pages(5):
+  for page in cursor.pages(1):
     for status in page:
       status = status._json
       tweet = status['full_text']
@@ -119,8 +139,8 @@ def eval_tweets(csv_name):
 
   return sum_polarity
 
-def construct_dataset(csv_name):
-  tweets = get_tweets('unb')
+def construct_dataset(csv_name, keywords):
+  tweets = get_tweets(keywords)
   tweets_df = pd.DataFrame(tweets)
   tweets_df.drop_duplicates(subset='text', keep='first')
   tweets_df.to_csv(csv_name, encoding='utf-8', index=False)
@@ -140,4 +160,12 @@ def construct_dataset(csv_name):
   print(polarity_total)
   print(classification)
 
-construct_dataset('unb_tweets_processed.csv')
+keywords = ({
+  'unb': 'unb,Universidade de Brasília,UnB, UNB',
+  'engenharias': 'engenharia',
+  'cic': 'cic,comp,Ciência da Computação',
+  'saude': 'medicina,enfermagem,veterinária',
+  'humanas': 'filosofia,sociologia,ciência política'
+  })
+
+construct_dataset('unb_tweets_processed.csv', keywords['unb'])
