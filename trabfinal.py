@@ -162,7 +162,7 @@ def construct_dataset(csv_name, keywords):
 
 keywords = ({
   'unb': 'unb,Universidade de Brasília,UnB, UNB',
-  'engenharias': 'engenharia',
+  'engenharias': 'engenharia,curso de engenharia,FT',
   'cic': 'cic,comp,Ciência da Computação',
   'saude': 'medicina,enfermagem,veterinária',
   'humanas': 'filosofia,sociologia,ciência política'
