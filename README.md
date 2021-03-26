@@ -14,4 +14,4 @@ keywords = {
 }
 ```
 
-The code was developed in 2019/2 as the Final Project of "Fundamentos de Sistemas Inteligentes" at Brasília University.
+The code was developed in 2019/2 as the Final Project of "Smart System Fundamentals" at Brasília University.
