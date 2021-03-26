@@ -14,4 +14,6 @@ keywords = {
 }
 ```
 
+Details of the text preprocessing strategies and analysis can be found in the code in this repo and in the [report](https://github.com/gcvasconcelos/nlp-sentiment_analysis/blob/master/fsi_projeto_final.pdf).
+
 The code was developed in 2019/2 as the Final Project of "Smart System Fundamentals" at Brasília University.
